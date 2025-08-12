@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-3xl mx-auto">
+        <!-- Place the learning objective block here: -->
+        {% if learning_objective %}
+        <div class="mb-4 p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+            <div class="font-bold">Learning Objective ({{ learning_objective.level|capitalize }})</div>
+            <div class="mb-2">{{ learning_objective.description }}</div>
+            {% if prerequisites %}
+                <div class="text-sm text-gray-600">Prerequisites:</div>
+                <ul class="list-disc ml-5 text-sm">
+                    {% for prereq in prerequisites %}
+                        <li>{{ prereq }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if learning_objective.knowledge %}
+                <div class="text-sm text-gray-700 mt-2">Required Knowledge: {{ learning_objective.knowledge }}</div>
+            {% endif %}
+            {% if learning_objective.course %}
+                <div class="text-sm text-gray-700">Course: {{ learning_objective.course }}</div>
+            {% endif %}
+            {% if learning_objective.external %}
+                <div class="text-sm text-blue-700">External Resource: <a class="underline" href="{{ learning_objective.external }}" target="_blank">{{ learning_objective.external }}</a></div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    {# --- Prerequisite Lockout --- #}
+    {% if not prereqs_satisfied %}
+      <div class="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border-l-4 border-red-400">
+        🚫 You must complete these prerequisites before starting this module:
+        <ul class="list-disc ml-5 mt-2">
+          {% for req in prerequisites %}
+            <li>{{ req }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% else %}
+      {# --- Begin Existing Chat / Quiz UI --- #}
+      <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold">{{ module.key }}: {{ module.name }}</h2>
+          <div>
+              <span class="text-sm font-semibold">Quiz:</span>
+              {% if progress.quiz_passed %}
+                  <span class="text-green-600 font-semibold">Passed</span>
+              {% else %}
+                  <span class="text-red-600 font-semibold">Pending</span>
+              {% endif %}
+          </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          <div id="chat-box" class="h-80 overflow-y-auto mb-4 p-2 bg-gray-50 rounded-lg"></div>
+          <form id="chat-form" data-module-id="{{ module.id }}" class="flex gap-2">
+              <input type="text" id="chat-input" class="flex-1 border px-3 py-2 rounded" placeholder="Type your message..." required>
+              <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Send</button>
+          </form>
+          {% set skill_matches = progress.learning_level|lower == learning_objective.level|lower %}
+
+          <button
+              id="mark-complete-btn"
+              class="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              {% if not progress.quiz_passed or not skill_matches or progress.status == 'completed' %}disabled{% endif %}
+              {% if progress.status == 'completed' and skill_matches %}style="display:none"{% endif %}
+          >
+              Mark Complete
+          </button>
+          
+          <span id="completed-badge" class="ml-4 px-3 py-1 bg-green-100 text-green-700 rounded-full font-semibold"
+            {% if progress.status != 'completed' or not skill_matches %}style="display:none"{% endif %}
+        >
+            Completed
+        </span>
+        
+      </div>
+      {# --- End Existing Chat / Quiz UI --- #}
+    {% endif %}
+
+</div>
+<script>
+const moduleId = {{ module.id }};
+const quizPassed = {{ 'true' if progress.quiz_passed else 'false' }};
+const completed = {{ 'true' if progress.status == 'completed' and skill_matches else 'false' }};
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const markBtn = document.getElementById('mark-complete-btn');
+    const badge = document.getElementById('completed-badge');
+    if (completed) {
+        if (markBtn) markBtn.style.display = 'none';
+        if (badge) badge.style.display = '';
+    }
+    // Mark Complete click handler
+    if (markBtn) {
+        markBtn.addEventListener('click', async function (e) {
+            e.preventDefault();
+            const resp = await fetch(`/mark_complete/${moduleId}`, {method: 'POST'});
+            if (resp.ok) {
+                markBtn.style.display = 'none';
+                badge.style.display = '';
+            }
+        });
+    }
+});
+</script>
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+{% endblock %}
