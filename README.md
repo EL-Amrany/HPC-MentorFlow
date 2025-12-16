@@ -43,30 +43,21 @@ HPC-Tutor is an AI-powered, adaptive learning platform designed to elevate skill
 ## 🚀 Running the chatbot locally 
 
 ### 1. Clone the repository:
-
-```bash
-git clone https://github.com/your-username/hpc-tutor.git
+git clone repo
 
 ### 2. Navigate to your project folder:
-### 3. Create a virtual environment:
-### 4. Activate the virtual environment :
-### 5. install the requirments:
-### 6. install the requirments:
-### 7. run the chatbot:
-
-```bash
-git clone https://github.com/your-username/hpc-tutor.git
-
-
-### 2. 
-
-
 cd Project_folder
 
-### 3. Create the environment: python -m venv test
-### 4. Activate the virtual environment 
-                                (On macOS / Linux): source venv/bin/activate
+### 3. Create a virtual environment:
+python -m venv test
+
+### 4. Activate the virtual environment :
+                                (On macOS / Linux): source test/bin/activate
                                 (On Windows): test\Scripts\activate
-### 5. install the requirments
-### 7. run the file "run.py": python run.py
+                                
+### 5. install the requirments:
+pip install -r requirements.txt
+
+### 6. run the chatbot:
+python run.py
 
