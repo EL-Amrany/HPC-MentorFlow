@@ -47,12 +47,16 @@ HPC-Tutor is an AI-powered, adaptive learning platform designed to elevate skill
 ```bash
 git clone https://github.com/your-username/hpc-tutor.git
 
-### 2.Navigate to your project folder: cd Project_folder
-### 3.Create the environment: python -m venv test
-### 4.Activate the virtual environment 
+### 2. Navigate to your project folder:
+
+```bash
+cd Project_folder
+
+### 3. Create the environment: python -m venv test
+### 4. Activate the virtual environment 
                                 (On macOS / Linux): source venv/bin/activate
                                 (On Windows): test\Scripts\activate
-### 5.install the requirments
-### 6.pip install requirements.txt
-### 7.run the file "run.py": python run.py
+### 5. install the requirments
+### 6. pip install requirements.txt
+### 7. run the file "run.py": python run.py
 
