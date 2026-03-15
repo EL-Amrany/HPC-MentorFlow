@@ -5,7 +5,7 @@ from . import chatbot
 from langchain_openai import ChatOpenAI
 from ..models import db, Progress, Module
 from flask import current_app
-from langchain.indexes import VectorstoreIndexCreator
+from langchain_classic.indexes import VectorstoreIndexCreator
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.document_loaders import DirectoryLoader
 from markupsafe import Markup
